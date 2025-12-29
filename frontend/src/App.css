@@ -1,70 +1,9 @@
-body {
-  margin: 0;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #74ebd5, #9face6);
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.main-content {
+  padding: 80px 20px 60px; /* space for navbar and footer */
 }
 
-.app {
-  width: 100%;
-  max-width: 400px;
-  padding: 20px;
-}
-
-.card {
-  background: #ffffffcc;
-  padding: 30px 20px;
-  border-radius: 20px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+.page-container {
+  max-width: 800px;
+  margin: auto;
   text-align: center;
-}
-
-.card h2 {
-  margin-bottom: 20px;
-  color: #333;
-}
-
-.card form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.card input,
-.card select {
-  padding: 10px;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-  font-size: 16px;
-}
-
-.card input:focus,
-.card select:focus {
-  outline: none;
-  border-color: #9face6;
-  box-shadow: 0 0 5px #9face6;
-}
-
-.card button {
-  padding: 12px;
-  border-radius: 10px;
-  border: none;
-  background-color: #9face6;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.card button:hover {
-  background-color: #74ebd5;
-}
-
-.prediction {
-  margin-top: 20px;
-  font-size: 18px;
-  color: #333;
 }

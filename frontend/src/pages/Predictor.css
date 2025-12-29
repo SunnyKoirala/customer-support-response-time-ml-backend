@@ -1,0 +1,56 @@
+.predictor-card {
+  background: #ffffffcc;
+  padding: 30px 20px;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  max-width: 400px;
+  margin: 20px auto;
+}
+
+.predictor-card h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.predictor-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.predictor-card input,
+.predictor-card select {
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+}
+
+.predictor-card input:focus,
+.predictor-card select:focus {
+  outline: none;
+  border-color: #9face6;
+  box-shadow: 0 0 5px #9face6;
+}
+
+.predictor-card button {
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background-color: #9face6;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.predictor-card button:hover {
+  background-color: #74ebd5;
+}
+
+.prediction {
+  margin-top: 20px;
+  font-size: 18px;
+  color: #333;
+}
