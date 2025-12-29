@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -20,7 +21,7 @@ df.rename(columns={
     "Ticket Type": "Category"
 }, inplace=True)
 
-# Convert to datetime
+# Convert to datetime safely
 df["CreatedTime"] = pd.to_datetime(df["CreatedTime"], errors="coerce")
 df["ResponseTime"] = pd.to_datetime(df["ResponseTime"], errors="coerce")
 
@@ -69,6 +70,7 @@ model.fit(X_train, y_train)
 # Flask API
 # ----------------------------
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all domains
 
 @app.route("/predict", methods=["POST"])
 def predict():
