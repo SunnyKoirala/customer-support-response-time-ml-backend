@@ -3,4 +3,4 @@ flask-cors
 pandas
 scikit-learn
 openai
-uvicorn[standard]
+gunicorn
