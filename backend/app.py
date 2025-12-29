@@ -1,9 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import pandas as pd
-import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, PolynomialFeatures, OneHotEncoder
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.linear_model import ElasticNet
 from sklearn.pipeline import Pipeline
@@ -25,21 +24,37 @@ df.rename(columns={
 df["CreatedTime"] = pd.to_datetime(df["CreatedTime"], errors="coerce")
 df["ResponseTime"] = pd.to_datetime(df["ResponseTime"], errors="coerce")
 
+# ----------------------------
 # Compute response time in hours
-df["ResponseHours"] = (df["ResponseTime"] - df["CreatedTime"]).dt.total_seconds() / 3600
-
 # ----------------------------
+df["ResponseHours"] = (
+    df["ResponseTime"] - df["CreatedTime"]
+).dt.total_seconds() / 3600
+
+# 🔒 IMPORTANT: remove invalid / extreme values
+df["ResponseHours"] = df["ResponseHours"].clip(lower=0, upper=72)
+
 # Remove rows with missing target
-# ----------------------------
-df = df.dropna(subset=["ResponseHours"])
+df = df.dropna(subset=["ResponseHours", "CreatedTime"])
 
+# ----------------------------
 # Feature engineering
+# ----------------------------
 df["HourOfDay"] = df["CreatedTime"].dt.hour
 df["DayOfWeek"] = df["CreatedTime"].dt.dayofweek
 
-# Calculate daily ticket volume
-daily_volume = df.groupby(df["CreatedTime"].dt.date).size().rename("DailyVolume")
-df = df.merge(daily_volume, left_on=df["CreatedTime"].dt.date, right_index=True)
+# Daily ticket volume
+daily_volume = (
+    df.groupby(df["CreatedTime"].dt.date)
+    .size()
+    .rename("DailyVolume")
+)
+
+df = df.merge(
+    daily_volume,
+    left_on=df["CreatedTime"].dt.date,
+    right_index=True
+)
 
 # ----------------------------
 # Prepare features and target
@@ -55,35 +70,43 @@ preprocessor = ColumnTransformer([
     ("cat", OneHotEncoder(handle_unknown="ignore", drop="first"), cat_cols)
 ])
 
-# Build model pipeline
+# ----------------------------
+# Build stable model pipeline
+# ----------------------------
 model = Pipeline([
     ("prep", preprocessor),
-    ("poly", PolynomialFeatures(degree=2, include_bias=False)),
-    ("reg", ElasticNet(alpha=0.1, l1_ratio=0.5))
+    ("reg", ElasticNet(alpha=0.1, l1_ratio=0.5, random_state=42))
 ])
 
-# Split data and train
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Train model
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
 model.fit(X_train, y_train)
 
 # ----------------------------
 # Flask API
 # ----------------------------
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all domains
+CORS(app)  # Allow frontend / Postman access
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    data = request.json
+    data = request.get_json()
+
     df_input = pd.DataFrame([{
-        "DailyVolume": data["DailyVolume"],
-        "HourOfDay": data["HourOfDay"],
-        "DayOfWeek": data["DayOfWeek"],
+        "DailyVolume": int(data["DailyVolume"]),
+        "HourOfDay": int(data["HourOfDay"]),
+        "DayOfWeek": int(data["DayOfWeek"]),
         "Priority": data["Priority"],
         "Category": data["Category"]
     }])
-    prediction = round(model.predict(df_input)[0], 2)
+
+    raw_pred = model.predict(df_input)[0]
+    prediction = round(max(0, raw_pred), 2)  # 🔒 protect output
+
     return jsonify({"prediction": prediction})
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
