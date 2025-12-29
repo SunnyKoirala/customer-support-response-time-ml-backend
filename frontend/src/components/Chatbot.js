@@ -2,62 +2,82 @@ import React, { useState } from "react";
 import "./Chatbot.css";
 
 function Chatbot() {
+  const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { sender: "bot", text: "👋 Hi! How may I help you today?" }
+    { from: "bot", text: "👋 Hi! How may I help you?" }
   ]);
   const [input, setInput] = useState("");
 
-  const botReply = (text) => {
-    let reply = "🤖 I'm here to help!";
-    if (text.includes("how")) reply = "This AI predicts customer support response time using ML.";
-    if (text.includes("model")) reply = "We use ElasticNet regression with engineered features.";
-    if (text.includes("feature")) reply = "Features include ticket volume, priority, category & time.";
-    if (text.includes("help")) reply = "You can ask about the model, prediction, or features.";
+  const quickReplies = [
+    "What does this app do?",
+    "How does prediction work?",
+    "Contact support"
+  ];
 
-    setMessages((prev) => [...prev, { sender: "bot", text: reply }]);
-  };
+  const toggleChat = () => setOpen(!open);
 
-  const sendMessage = () => {
-    if (!input.trim()) return;
+  const sendMessage = (text) => {
+    if (!text.trim()) return;
 
-    setMessages((prev) => [...prev, { sender: "user", text: input }]);
-    setTimeout(() => botReply(input.toLowerCase()), 700);
+    const userMsg = { from: "user", text };
+    const botMsg = {
+      from: "bot",
+      text:
+        text.includes("predict")
+          ? "Our AI predicts response time based on volume, priority, and category."
+          : text.includes("contact")
+          ? "You can contact support via email or the About page."
+          : "This is an AI-powered customer support response time predictor."
+    };
+
+    setMessages([...messages, userMsg, botMsg]);
     setInput("");
   };
 
-  const quickAsk = (text) => {
-    setMessages((prev) => [...prev, { sender: "user", text }]);
-    setTimeout(() => botReply(text.toLowerCase()), 700);
-  };
-
   return (
-    <div className="chatbot">
-      <div className="chat-header">AI Assistant</div>
+    <>
+      {/* Floating Button */}
+      <div className="chatbot-button" onClick={toggleChat}>
+        💬
+      </div>
 
-      <div className="chat-body">
-        {messages.map((msg, i) => (
-          <div key={i} className={`msg ${msg.sender}`}>
-            {msg.text}
+      {/* Chat Window */}
+      {open && (
+        <div className="chatbot-window">
+          <div className="chatbot-header">
+            AI Assistant
+            <span onClick={toggleChat}>✕</span>
           </div>
-        ))}
-      </div>
 
-      <div className="quick-options">
-        <button onClick={() => quickAsk("How does this AI work?")}>How it works</button>
-        <button onClick={() => quickAsk("What model is used?")}>Model</button>
-        <button onClick={() => quickAsk("What features are used?")}>Features</button>
-      </div>
+          <div className="chatbot-body">
+            {messages.map((msg, index) => (
+              <div key={index} className={`msg ${msg.from}`}>
+                {msg.text}
+              </div>
+            ))}
 
-      <div className="chat-input">
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Type your question..."
-          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-        />
-        <button onClick={sendMessage}>Send</button>
-      </div>
-    </div>
+            <div className="quick-replies">
+              {quickReplies.map((q, i) => (
+                <button key={i} onClick={() => sendMessage(q)}>
+                  {q}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="chatbot-input">
+            <input
+              type="text"
+              placeholder="Type your message..."
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && sendMessage(input)}
+            />
+            <button onClick={() => sendMessage(input)}>Send</button>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
