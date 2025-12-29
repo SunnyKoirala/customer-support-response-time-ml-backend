@@ -1,12 +1,26 @@
 import React from "react";
+import "./Home.css";
 
 function Home() {
-  return (
-    <div className="page-container">
-      <h1>Welcome to AI Customer Support Predictor</h1>
-      <p>Predict your support response time using AI.</p>
-    </div>
-  );
+return (
+<section className="hero">
+<h1>
+AI-Powered <span>Customer Support Intelligence</span>
+</h1>
+<p>
+Predict response times, optimize ticket workflows,
+and deliver world-class customer experiences using AI.
+</p>
+
+  <div className="hero-cards">
+    <div className="glass-card">🤖 ML Prediction</div>
+    <div className="glass-card">📊 Smart Analytics</div>
+    <div className="glass-card">⚡ Real-Time API</div>
+  </div>
+</section>
+
+
+);
 }
 
 export default Home;

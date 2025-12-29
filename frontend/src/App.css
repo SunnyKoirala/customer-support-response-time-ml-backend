@@ -1,9 +1,10 @@
-.main-content {
-  padding: 80px 20px 60px; /* space for navbar and footer */
+.app-layout {
+min-height: 100vh;
+display: flex;
+flex-direction: column;
 }
 
-.page-container {
-  max-width: 800px;
-  margin: auto;
-  text-align: center;
+.content {
+flex: 1;
+padding: 40px 20px;
 }

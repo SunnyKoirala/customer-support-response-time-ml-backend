@@ -3,9 +3,7 @@ import "./Footer.css";
 
 function Footer() {
   return (
-    <footer className="footer">
-      <p>© 2025 AI Support Predictor. All rights reserved.</p>
-    </footer>
+    <footer className="footer"> © 2025 <span>AI Support Predictor</span> — Powered by ML & React </footer>
   );
 }
 
