@@ -1,5 +1,14 @@
 import React, { useState } from "react";
 import "./Chatbot.css";
+import { API_BASE_URL } from "../config";
+
+fetch(`${API_BASE_URL}/chat`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ message: userInput })
+})
+  .then(res => res.json())
+  .then(data => setReply(data.reply));
 
 function Chatbot() {
   const [open, setOpen] = useState(false);

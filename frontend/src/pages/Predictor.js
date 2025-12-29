@@ -1,5 +1,12 @@
 import React, { useState } from "react";
 import "./Predictor.css";
+fetch(`${API_BASE_URL}/predict`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(formData)
+})
+  .then(res => res.json())
+  .then(data => setPrediction(data.prediction));
 
 function Predictor() {
   const [formData, setFormData] = useState({
