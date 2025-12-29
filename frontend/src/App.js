@@ -8,6 +8,7 @@ import Predictor from "./pages/Predictor";
 import About from "./pages/About";
 import "./App.css";
 
+
 function App() {
 return (
 <div className="app-layout">

@@ -77,6 +77,13 @@ else:
 # ----------------------------
 # Prediction API
 # ----------------------------
+@app.route("/")
+def home():
+    return {
+        "status": "API is running",
+        "message": "Customer Support Response Time Prediction API"
+    }
+
 @app.route("/predict", methods=["POST"])
 def predict():
     data = request.get_json()
@@ -142,4 +149,4 @@ def chat():
 # Run the server
 # ----------------------------
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run( debug=True)
